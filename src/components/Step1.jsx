@@ -1,9 +1,10 @@
 import { ErrorMessage, Field } from "formik";
-import "../styles/Step1.css";
+import "../styles/Step.css";
 
 function Step1({ touched, errors }) {
   return (
     <div className="step-container">
+      <h3>Step 1</h3>
       <div className="form-group">
         <label htmlFor="name">Name:</label>
         <Field

@@ -4,6 +4,15 @@
     gap: 20px;
 }
 
+.step-container h3 {
+    text-align: center;
+    color: #28a745;
+    background-color: #ffff00;
+    border-color: #28a745;
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.6);
+    padding: 5px;
+}
+
 .form-group {
     display: flex;
     flex-direction: column;
