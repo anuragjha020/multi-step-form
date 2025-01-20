@@ -17,6 +17,7 @@ function Step1({ touched, errors }) {
         />
         <ErrorMessage name="name" component="div" className="error-message" />
       </div>
+
       <div className="form-group">
         <label htmlFor="email">Email:</label>
         <Field
@@ -29,6 +30,7 @@ function Step1({ touched, errors }) {
         />
         <ErrorMessage name="email" component="div" className="error-message" />
       </div>
+
       <div className="form-group">
         <label htmlFor="phone">Phone:</label>
         <Field

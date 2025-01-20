@@ -7,9 +7,11 @@ import {
   Step2Validation,
   Step3Validation,
 } from "../utils/formValidator";
+
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
+
 import "../styles/MultiStepForm.css";
 
 function MultiStepForm() {
@@ -76,7 +78,7 @@ function MultiStepForm() {
   function handleSubmit(values) {
     console.log("Final Form Data:", values);
     alert("Form submitted successfully!");
-    navigate("/order-successful");
+    navigate("/order-successful", { state: values });
   }
 
   return (
@@ -136,6 +138,18 @@ function MultiStepForm() {
                 </button>
               )}
 
+              {/* cancel button */}
+              <button
+                type="button"
+                className="form-button-cancel"
+                onClick={() => {
+                  resetForm();
+                  navigate("/");
+                }}
+              >
+                Cancel
+              </button>
+
               {/* next button */}
               {currentStep < 3 && (
                 <button
@@ -157,18 +171,6 @@ function MultiStepForm() {
                   Submit
                 </button>
               )}
-            </div>
-            <div className="cancel-button-container">
-              <button
-                type="button"
-                className="form-button-cancel"
-                onClick={() => {
-                  resetForm();
-                  navigate("/");
-                }}
-              >
-                Cancel
-              </button>
             </div>
           </Form>
         )}
