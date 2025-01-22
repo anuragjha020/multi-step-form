@@ -4,7 +4,6 @@ import "../styles/Step.css";
 function Step3({ touched, errors }) {
   return (
     <div className="step-container">
-      <h3>Step 3</h3>
       <div className="form-group">
         <label htmlFor="card">Card:</label>
         <Field

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import { useNavigate } from "react-router-dom";
 
@@ -16,21 +16,31 @@ import "../styles/MultiStepForm.css";
 
 function MultiStepForm() {
   const [currentStep, setCurrentStep] = useState(1);
-  const navigate = useNavigate();
-
-  const formData = {
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     city: "",
+    avatar: null,
     state: "",
     pin: "",
     card: "",
     expiry: "",
     cvv: "",
-  };
+  });
 
-  //getting validation schema based on current form step
+  const navigate = useNavigate();
+
+  // Load saved state from localStorage on component mount
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("multiStepFormData"));
+    if (savedData) {
+      setCurrentStep(savedData.currentStep || 1);
+      setFormData(savedData.data || {});
+    }
+  }, []);
+  console.log("data fetched on mount : ", formData);
+
   function getValidationSchema() {
     switch (currentStep) {
       case 1:
@@ -44,41 +54,54 @@ function MultiStepForm() {
     }
   }
 
-  //handle next for next button
-  function handleNext(validateForm, setTouched) {
-    //validating fields based on current step
+  // Handle Next Button
+  function handleNext(validateForm, setTouched, values) {
     if (currentStep === 1) {
-      setTouched({ name: true, email: true, phone: true });
+      setTouched({ name: true, email: true, phone: true, avatar: true });
     } else if (currentStep === 2) {
       setTouched({ city: true, state: true, pin: true });
     } else {
-      setTouched({
-        card: true,
-        expiry: true,
-        cvv: true,
-      });
+      setTouched({ card: true, expiry: true, cvv: true });
     }
+
     validateForm().then((errors) => {
       if (Object.keys(errors).length === 0) {
-        setCurrentStep(currentStep + 1);
+        // Update formData on clicking next button
+        setFormData((prevFormData) => {
+          const updatedFormData = { ...prevFormData, ...values };
+          localStorage.setItem(
+            "multiStepFormData",
+            JSON.stringify({
+              currentStep: currentStep + 1,
+              data: updatedFormData,
+            })
+          );
+          return updatedFormData;
+        });
+        setCurrentStep((prevStep) => prevStep + 1);
       } else {
-        console.log("Validation errors:", errors);
+        console.error("Validation errors:", errors);
         const firstErrorField = Object.keys(errors)[0];
         document.getElementById(firstErrorField)?.focus();
       }
     });
   }
 
-  //handle back for bck button
+  // Handle Back Button
   function handleBack() {
-    setCurrentStep(currentStep - 1);
+    setCurrentStep((prevStep) => prevStep - 1);
   }
 
-  //handle submit for final step
+  // Handle Submit
   function handleSubmit(values) {
-    console.log("Final Form Data:", values);
+    const finalFormData = { ...formData, ...values };
+    console.log("Final Form Data:", finalFormData);
+
     alert("Form submitted successfully!");
-    navigate("/order-successful", { state: values });
+    navigate("/order-successful", { state: finalFormData });
+
+    // Clear saved state after submission
+    localStorage.removeItem("multiStepFormData");
   }
 
   return (
@@ -87,6 +110,7 @@ function MultiStepForm() {
         initialValues={formData}
         validationSchema={getValidationSchema()}
         onSubmit={handleSubmit}
+        enableReinitialize
       >
         {({
           values,
@@ -99,6 +123,33 @@ function MultiStepForm() {
           isValid,
         }) => (
           <Form className="form-content">
+            {/* Progress Bar */}
+            <div className="progress-bar-container">
+              {Array.from({ length: 3 }, (_, index) => {
+                const isSuccess = index < currentStep - 1;
+                const isActive = index === currentStep - 1;
+                return (
+                  <div
+                    key={index}
+                    className={`progress-bar-segment ${
+                      isSuccess ? "success" : isActive ? "active" : ""
+                    }`}
+                  >
+                    {isActive && (
+                      <p className="step-name">
+                        {currentStep === 1
+                          ? "Personal Details"
+                          : currentStep === 2
+                          ? "Address"
+                          : "Payment"}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Step Components */}
             {currentStep === 1 && (
               <Step1
                 values={values}
@@ -107,7 +158,6 @@ function MultiStepForm() {
                 errors={errors}
               />
             )}
-
             {currentStep === 2 && (
               <Step2
                 values={values}
@@ -125,9 +175,8 @@ function MultiStepForm() {
               />
             )}
 
-            {/* buttons */}
+            {/* Navigation Buttons */}
             <div className="form-navigation">
-              {/* back button */}
               {currentStep > 1 && (
                 <button
                   type="button"
@@ -137,31 +186,26 @@ function MultiStepForm() {
                   Back
                 </button>
               )}
-
-              {/* cancel button */}
               <button
                 type="button"
                 className="form-button-cancel"
                 onClick={() => {
                   resetForm();
+                  localStorage.removeItem("multiStepFormData");
                   navigate("/");
                 }}
               >
                 Cancel
               </button>
-
-              {/* next button */}
               {currentStep < 3 && (
                 <button
                   type="button"
                   className="form-button"
-                  onClick={() => handleNext(validateForm, setTouched)}
+                  onClick={() => handleNext(validateForm, setTouched, values)}
                 >
                   Next
                 </button>
               )}
-
-              {/* submit button */}
               {currentStep === 3 && (
                 <button
                   type="submit"

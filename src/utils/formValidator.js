@@ -1,4 +1,6 @@
 import * as Yup from "yup";
+const FILE_SIZE = 10 * 1024 * 1024;
+const SUPPORTED_FORMATS = ["image/jpeg", "image/png", "image/jpg"];
 
 export const Step1Validation = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -6,6 +8,17 @@ export const Step1Validation = Yup.object().shape({
   phone: Yup.string()
     .matches(/^[0-9]{10}$/, "Phone must be a 10-digit number")
     .required("Phone is required"),
+  avatar: Yup.mixed()
+    .required("A file is required")
+    .test(
+      "fileType",
+      "Unsupported file format. Only JPEG and PNG are allowed.",
+      (value) =>
+        value && value.type ? SUPPORTED_FORMATS.includes(value.type) : false
+    )
+    .test("fileSize", "File size is too large. Max size is 2MB.", (value) =>
+      value && value.size ? value.size <= FILE_SIZE : false
+    ),
 });
 
 export const Step2Validation = Yup.object().shape({

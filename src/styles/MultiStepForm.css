@@ -58,3 +58,48 @@
 .form-button-cancel:hover {
     background-color: #b50000;
 }
+/* Progress Bar Container */
+.progress-bar-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    width: 100%;
+    height: 24px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+/* Individual Step Segments */
+.progress-bar-segment {
+    flex: 1;
+    height: 100%;
+    background-color: #e0e0e0;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Last Segment Without Margin */
+.progress-bar-segment:last-child {
+    margin-right: 0;
+}
+
+/* Success Step (Completed) */
+.progress-bar-segment.success {
+    background-color: #4caf50;
+    /* Green */
+}
+
+/* Active Step (In Progress) */
+.progress-bar-segment.active {
+    background-color: #ffa500;
+    /* Orange */
+}
+
+.progress-bar-segment .step-name {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.5;
+    font-size: 8px;
+}
