@@ -8,9 +8,21 @@ function Step1({
   setIsDragging,
   isDragging,
   setFieldValue,
-  setFileName,
+  getBase64,
 }) {
   const fileInputRef = useRef(null);
+
+  const handleFileUpload = (file) => {
+    getBase64(file)
+      .then((base64) => {
+        setFieldValue("avatar", base64);
+      })
+      .catch((err) => {
+        setFieldValue("avatar", "");
+        setFieldValue("error", err.message);
+      });
+  };
+
   return (
     <div className="step-container">
       <div className="form-group">
@@ -63,12 +75,10 @@ function Step1({
         onDrop={(e) => {
           e.preventDefault();
           setIsDragging(false);
+
           const droppedFile = e.dataTransfer.files[0];
           if (droppedFile) {
-            setFieldValue("avatar", droppedFile);
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(droppedFile);
-            fileInputRef.current.files = dataTransfer.files;
+            handleFileUpload(droppedFile);
           }
         }}
       >
@@ -82,9 +92,11 @@ function Step1({
             touched.avatar && errors.avatar ? "input-error" : ""
           }`}
           onChange={(e) => {
-            const file = e.target.files[0];
-            if (file) {
-              setFieldValue("avatar", file); // Set the file in Formik's state
+            console.log("selected file ", e.target.files);
+
+            const selectedFile = e.target.files[0];
+            if (selectedFile) {
+              handleFileUpload(selectedFile);
             }
           }}
         />

@@ -9,6 +9,9 @@ function SuccessPage() {
   const navigate = useNavigate();
   return (
     <div className="pageNotFound-container">
+      <div>
+        <img src={data.avatar} alt="Avatar Preview" className="avatar" />
+      </div>
       <p>Order placed successfully ✅</p>
 
       <div className="card">

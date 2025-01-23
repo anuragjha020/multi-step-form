@@ -16,6 +16,7 @@ import "../styles/MultiStepForm.css";
 
 function MultiStepForm() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -52,6 +53,16 @@ function MultiStepForm() {
       default:
         return null;
     }
+  }
+
+  //CONVERT IMAGE
+  function getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
   }
 
   // Handle Next Button
@@ -156,6 +167,9 @@ function MultiStepForm() {
                 setFieldValue={setFieldValue}
                 touched={touched}
                 errors={errors}
+                isDragging={isDragging}
+                setIsDragging={setIsDragging}
+                getBase64={getBase64}
               />
             )}
             {currentStep === 2 && (
