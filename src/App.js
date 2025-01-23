@@ -15,8 +15,8 @@ function App() {
         <div className="app">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/place-order" element={<MultiStepForm />} />
-            <Route path="/order-successful" element={<SuccessPage />} />
+            <Route path="/user-form" element={<MultiStepForm />} />
+            <Route path="/form-success" element={<SuccessPage />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </div>

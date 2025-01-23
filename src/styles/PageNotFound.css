@@ -32,10 +32,17 @@
     font-size: 1.5em;
 }
 .avatar {
-    width: 100px;
-    height: 100px;
+    width: 60px;
+        height: 60px;
     object-fit: cover;
     border: 2px solid grey;
     border-radius: 50%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+.field-name strong {
+    text-transform: uppercase;
+}
+
+.avatar-container {
+    text-align: center;
 }

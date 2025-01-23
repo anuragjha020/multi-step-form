@@ -9,16 +9,19 @@ function SuccessPage() {
   const navigate = useNavigate();
   return (
     <div className="pageNotFound-container">
-      <div>
-        <img src={data.avatar} alt="Avatar Preview" className="avatar" />
-      </div>
-      <p>Order placed successfully ✅</p>
+      <p>Successful !! ✅</p>
 
       <div className="card">
         {data ? (
-          <div>
+          <div className="field-name">
+            <div className="avatar-container">
+              <img src={data.avatar} alt="Avatar Preview" className="avatar" />
+            </div>
             <p>
               <strong>Name:</strong> {data.name}
+            </p>
+            <p>
+              <strong>DOB:</strong> {data.dob}
             </p>
             <p>
               <strong>Email:</strong> {data.email}

@@ -1,6 +1,6 @@
 import { ErrorMessage, Field } from "formik";
 import "../styles/Step.css";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 function Step1({
   touched,
@@ -10,9 +10,11 @@ function Step1({
   setFieldValue,
   getBase64,
 }) {
+  const [fileName, setFileName] = useState("");
   const fileInputRef = useRef(null);
 
   const handleFileUpload = (file) => {
+    setFileName(file.name);
     getBase64(file)
       .then((base64) => {
         setFieldValue("avatar", base64);
@@ -21,6 +23,12 @@ function Step1({
         setFieldValue("avatar", "");
         setFieldValue("error", err.message);
       });
+  };
+
+  //handle select file click
+  const handleSelectFileClick = (e) => {
+    e.preventDefault();
+    fileInputRef.current.click();
   };
 
   return (
@@ -39,34 +47,23 @@ function Step1({
       </div>
 
       <div className="form-group">
-        <label htmlFor="email">Email:</label>
+        <label htmlFor="dob">DOB:</label>
         <Field
-          id="email"
-          type="email"
-          name="email"
-          className={`form-input ${
-            touched.email && errors.email ? "input-error" : ""
-          }`}
-        />
-        <ErrorMessage name="email" component="div" className="error-message" />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="phone">Phone:</label>
-        <Field
-          id="phone"
+          id="dob"
           type="text"
-          name="phone"
+          name="dob"
           className={`form-input ${
-            touched.phone && errors.phone ? "input-error" : ""
+            touched.dob && errors.dob ? "input-error" : ""
           }`}
         />
-        <ErrorMessage name="phone" component="div" className="error-message" />
+        <ErrorMessage name="dob" component="div" className="error-message" />
       </div>
 
       {/* File Upload with Drag-and-Drop */}
       <div
-        className={`form-group drop-zone ${isDragging ? "dragging" : ""}`}
+        className={`form-group drop-zone ${isDragging ? "dragging" : ""} ${
+          fileName ? (errors.avatar ? "red-border" : "green-border") : ""
+        }`}
         onDragOver={(e) => {
           e.preventDefault();
           setIsDragging(true);
@@ -83,6 +80,23 @@ function Step1({
         }}
       >
         <label htmlFor="avatar">Upload File:</label>
+        <div>
+          <button className="btn-select-file" onClick={handleSelectFileClick}>
+            {fileName ? "Change file" : "Select file"}
+          </button>
+        </div>
+        <div
+          className={`selected-file ${
+            !fileName
+              ? "no-file-name"
+              : errors.avatar
+              ? "red-file-name"
+              : "green-file-name"
+          }`}
+        >
+          {fileName ? fileName : "No file selected"}
+        </div>
+        {/* </div> */}
         <input
           id="avatar"
           type="file"
@@ -92,8 +106,6 @@ function Step1({
             touched.avatar && errors.avatar ? "input-error" : ""
           }`}
           onChange={(e) => {
-            console.log("selected file ", e.target.files);
-
             const selectedFile = e.target.files[0];
             if (selectedFile) {
               handleFileUpload(selectedFile);
@@ -102,7 +114,8 @@ function Step1({
         />
         <ErrorMessage name="avatar" component="div" className="error-message" />
         <p className="drop-instructions">
-          Drag and drop a file here, or click to select a file.
+          Drag and drop a file here, or click to{" "}
+          {fileName ? "change" : "select a"} file.
         </p>
       </div>
     </div>

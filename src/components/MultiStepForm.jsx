@@ -19,15 +19,13 @@ function MultiStepForm() {
   const [isDragging, setIsDragging] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
+    dob: "",
+    avatar: null,
     email: "",
     phone: "",
     city: "",
-    avatar: null,
     state: "",
     pin: "",
-    card: "",
-    expiry: "",
-    cvv: "",
   });
 
   const navigate = useNavigate();
@@ -68,11 +66,11 @@ function MultiStepForm() {
   // Handle Next Button
   function handleNext(validateForm, setTouched, values) {
     if (currentStep === 1) {
-      setTouched({ name: true, email: true, phone: true, avatar: true });
+      setTouched({ name: true, dob: true, avatar: true });
     } else if (currentStep === 2) {
       setTouched({ city: true, state: true, pin: true });
     } else {
-      setTouched({ card: true, expiry: true, cvv: true });
+      setTouched({ phone: true, email: true });
     }
 
     validateForm().then((errors) => {
@@ -109,7 +107,7 @@ function MultiStepForm() {
     console.log("Final Form Data:", finalFormData);
 
     alert("Form submitted successfully!");
-    navigate("/order-successful", { state: finalFormData });
+    navigate("/form-success", { state: finalFormData });
 
     // Clear saved state after submission
     localStorage.removeItem("multiStepFormData");
@@ -152,7 +150,7 @@ function MultiStepForm() {
                           ? "Personal Details"
                           : currentStep === 2
                           ? "Address"
-                          : "Payment"}
+                          : "Cotact"}
                       </p>
                     )}
                   </div>

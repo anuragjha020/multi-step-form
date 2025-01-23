@@ -5,8 +5,8 @@ function Home() {
   const navigate = useNavigate();
   return (
     <div className="order-button-container">
-      <button className="order-button" onClick={() => navigate("/place-order")}>
-        Place order
+      <button className="order-button" onClick={() => navigate("/user-form")}>
+        Open Form
       </button>
     </div>
   );
