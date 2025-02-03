@@ -16,8 +16,8 @@ function Step1({
   const handleFileUpload = (file) => {
     setFileName(file.name);
     getBase64(file)
-      .then((base64) => {
-        setFieldValue("avatar", base64);
+      .then((convertedFile) => {
+        setFieldValue("avatar", convertedFile);
       })
       .catch((err) => {
         setFieldValue("avatar", "");
@@ -79,6 +79,7 @@ function Step1({
           }
         }}
       >
+        {/* select file by clicking */}
         <label htmlFor="avatar">Upload File:</label>
         <div>
           <button className="btn-select-file" onClick={handleSelectFileClick}>

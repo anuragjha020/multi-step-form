@@ -8,9 +8,6 @@ import SuccessPage from "./components/SuccessPage";
 function App() {
   return (
     <div>
-      {/* <Home /> */}
-      {/* <MultiStepForm /> */}
-
       <Router>
         <div className="app">
           <Routes>

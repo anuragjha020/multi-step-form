@@ -3,8 +3,9 @@ import "../styles/PageNotFound.css";
 
 function SuccessPage() {
   const location = useLocation();
+
   const data = location.state;
-  console.log("data", data);
+  console.log("data on success page :", data);
 
   const navigate = useNavigate();
   return (
