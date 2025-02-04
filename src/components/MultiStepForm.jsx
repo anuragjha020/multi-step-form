@@ -12,9 +12,12 @@ import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
 
+
 import "../styles/MultiStepForm.css";
+import SummaryModal from "./SummaryModal";
 
 function MultiStepForm() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [formData, setFormData] = useState({
@@ -30,7 +33,6 @@ function MultiStepForm() {
 
   const navigate = useNavigate();
 
-  // Load saved state from localStorage on component mount
   useEffect(() => {
     const savedData = JSON.parse(localStorage.getItem("multiStepFormData"));
     if (savedData) {
@@ -38,7 +40,6 @@ function MultiStepForm() {
       setFormData(savedData.data || {});
     }
   }, []);
-  console.log("data fetched on mount : ", formData);
 
   function getValidationSchema() {
     switch (currentStep) {
@@ -53,17 +54,6 @@ function MultiStepForm() {
     }
   }
 
-  //CONVERT IMAGE
-  function getBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // Handle Next Button
   function handleNext(validateForm, setTouched, values) {
     if (currentStep === 1) {
       setTouched({ name: true, dob: true, avatar: true });
@@ -75,7 +65,6 @@ function MultiStepForm() {
 
     validateForm().then((errors) => {
       if (Object.keys(errors).length === 0) {
-        // Update formData on clicking next button
         setFormData((prevFormData) => {
           const updatedFormData = { ...prevFormData, ...values };
           localStorage.setItem(
@@ -88,29 +77,37 @@ function MultiStepForm() {
           return updatedFormData;
         });
         setCurrentStep((prevStep) => prevStep + 1);
-      } else {
-        console.error("Validation errors:", errors);
-        const firstErrorField = Object.keys(errors)[0];
-        document.getElementById(firstErrorField)?.focus();
       }
     });
   }
 
-  // Handle Back Button
+  //CONVERT IMAGE
+  function getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  }
+
   function handleBack() {
     setCurrentStep((prevStep) => prevStep - 1);
   }
 
-  // Handle Submit
   function handleSubmit(values) {
-    const finalFormData = { ...formData, ...values };
-    console.log("Final Form Data:", finalFormData);
+    console.log("Final Form Data:", values);
+    setIsModalOpen(true);
 
     alert("Form submitted successfully!");
-    navigate("/form-success", { state: finalFormData });
+    navigate("/form-success", { state: values });
 
-    // Clear saved state after submission
     localStorage.removeItem("multiStepFormData");
+  }
+
+  function handleModalSubmit(values) {
+    setFormData({ ...formData, ...values });
+    setIsModalOpen(true);
   }
 
   return (
@@ -118,7 +115,7 @@ function MultiStepForm() {
       <Formik
         initialValues={formData}
         validationSchema={getValidationSchema()}
-        onSubmit={handleSubmit}
+        onSubmit={handleModalSubmit}
         enableReinitialize
       >
         {({
@@ -132,7 +129,6 @@ function MultiStepForm() {
           isValid,
         }) => (
           <Form className="form-content">
-            {/* Progress Bar */}
             <div className="progress-bar-container">
               {Array.from({ length: 3 }, (_, index) => {
                 const isSuccess = index < currentStep - 1;
@@ -150,7 +146,7 @@ function MultiStepForm() {
                           ? "Personal Details"
                           : currentStep === 2
                           ? "Address"
-                          : "Cotact"}
+                          : "Contact"}
                       </p>
                     )}
                   </div>
@@ -158,7 +154,6 @@ function MultiStepForm() {
               })}
             </div>
 
-            {/* Step Components */}
             {currentStep === 1 && (
               <Step1
                 values={values}
@@ -187,7 +182,6 @@ function MultiStepForm() {
               />
             )}
 
-            {/* Navigation Buttons */}
             <div className="form-navigation">
               {currentStep > 1 && (
                 <button
@@ -224,13 +218,21 @@ function MultiStepForm() {
                   className="form-button submit-button"
                   disabled={!isValid}
                 >
-                  Submit
+                  Review & Submit
                 </button>
               )}
             </div>
           </Form>
         )}
       </Formik>
+
+      {/* Summary Modal */}
+      <SummaryModal
+        isModalOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        formData={formData}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 }
