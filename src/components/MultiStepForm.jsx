@@ -91,10 +91,12 @@ function MultiStepForm() {
     });
   }
 
+  //handle back
   function handleBack() {
     setCurrentStep((prevStep) => prevStep - 1);
   }
 
+  //handle submit
   function handleSubmit(values) {
     console.log("Final Form Data:", values);
     setIsModalOpen(true);
@@ -105,8 +107,11 @@ function MultiStepForm() {
     localStorage.removeItem("multiStepFormData");
   }
 
+  //handle modal submit
   function handleModalSubmit(values) {
     setFormData({ ...formData, ...values });
+    console.log("form data on modal page :", formData);
+    
     setIsModalOpen(true);
   }
 
